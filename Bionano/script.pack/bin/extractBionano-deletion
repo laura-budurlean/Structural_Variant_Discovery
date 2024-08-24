@@ -1,0 +1,32 @@
+#!/bin/bash
+
+cell=$1
+
+
+## grep deletions with loci and size, zygosity and confidence level
+##grep deletion ${cell}*.smap | awk 'BEGIN{OFS="\t"}{print "chr"$3, $7, $8, $8-$7-$6+$5, $18, $9}' > ${cell}.Bionano.del
+grep deletion variants_combine_filters_inMoleRefine1.smap | awk 'BEGIN{OFS="\t"}{print "chr"$3, $7, $8, $8-$7-$6+$5, $18, $9}' > ${cell}.Bionano.del
+awk 'BEGIN{OFS="\t"}{$2=int($2);$3=int($3);$4=int($4);print}' ${cell}.Bionano.del | sort | uniq > ${cell}.Bionano.del.uniq
+sed -i 's/chr23/chrX/g' ${cell}.Bionano.del.uniq
+sed -i 's/chr24/chrY/g' ${cell}.Bionano.del.uniq
+wc -l ${cell}.Bionano.del.uniq
+
+## remove deletions smaller than 50bp, confidence < 0
+awk '$4 >= 50 && $6 >=0 {$4=int($4);print}' ${cell}.Bionano.del.uniq  > ${cell}.Bionano.del.uniq.fi50
+## awk '$4 >= 50 {$4=int($4);print}' ${cell}.Bionano.del.uniq  > ${cell}.Bionano.del.uniq.fi50
+sed -i 's/ /\t/g' ${cell}.Bionano.del.uniq.fi50
+
+rm ${cell}.Bionano.del
+## rm ${cell}.Bionano.del.uniq
+
+
+wc -l ${cell}.Bionano.del.uniq.fi50
+## remove gaps
+bedtools intersect -a ${cell}.Bionano.del.uniq.fi50 -b /gpfs/Labs/IPM/Project_ALL/scripts/Bionano/script.pack/gap.indicator.bed -f 1 -F 1 -v > ${cell}.Bionano.del.uniq.fi50.rmGap
+
+## remove 1Mb recurrent
+bedtools intersect -a ${cell}.Bionano.del.uniq.fi50.rmGap -b /gpfs/Labs/IPM/Project_ALL/scripts/Bionano/script.pack/1mb.recurrent.bed -f 0.8 -F 0.8 -v  > ${cell}.Bionano.del.uniq.fi50.rmGap.rm1MBrec.bed
+
+#rm ${cell}.Bionano.del.uniq.fi50.rmGap
+#rm ${cell}.Bionano.del.uniq.fi50
+#rm ${cell}.Bionano.del.uniq

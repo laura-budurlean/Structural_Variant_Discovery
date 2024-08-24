@@ -1,0 +1,21 @@
+#!/bin/bash
+
+cell=$1
+
+# grep insertion ${cell}*.smap | awk 'BEGIN{OFS="\t"}{print "chr"$3, $7, $8, $6-$5-$8+$7, $18, $9}' > ${cell}.Bionano.ins
+grep insertion variants_combine_filters_inMoleRefine1.smap | awk 'BEGIN{OFS="\t"}{print "chr"$3, $7, $8, $6-$5-$8+$7, $18, $9}' > ${cell}.Bionano.ins
+
+awk 'BEGIN{OFS="\t"}{$2=int($2);$3=int($3);$4=int($4);print}' ${cell}.Bionano.ins | sort | uniq > ${cell}.Bionano.ins.uniq
+sed -i 's/chr23/chrX/g' ${cell}.Bionano.ins.uniq
+sed -i 's/chr24/chrY/g' ${cell}.Bionano.ins.uniq
+
+## remove insertions smaller than 50bp
+awk '$4 >= 50 {$4=int($4);print}' ${cell}.Bionano.ins.uniq  > ${cell}.Bionano.ins.uniq.fi50
+sed -i 's/ /\t/g' ${cell}.Bionano.ins.uniq.fi50
+rm ${cell}.Bionano.ins
+rm ${cell}.Bionano.ins.uniq
+
+## remove insertions with confidence level lower than 0
+awk '$6 >=0' ${cell}.Bionano.ins.uniq.fi50 > ${cell}.Bionano.ins.uniq.fi50.confidence
+rm ${cell}.Bionano.ins.uniq.fi50
+
