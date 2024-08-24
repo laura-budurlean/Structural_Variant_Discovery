@@ -1,4 +1,6 @@
 # Structural Variant Detection Pipeline Combining Optical Genome Mapping and Whole Genome Sequencing
+by Laura Budurlean
+
 A combination of optical genome mapping with Bionano and whole genome sequencing short-read data. This pipeline was created to help integrate structural variant calling from these two technologies. These results were published in:
 
 Budurlean L, Tukaramrao DB, Zhang L, Dovat S, Broach J. Integrating optical genome mapping and whole genome sequencing in somatic structural variant detection. Journal of Personalized Medicine. 2024;14(3):291.
