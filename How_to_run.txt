@@ -42,7 +42,7 @@ NOTE before step 8 Make sure your FreeCNV .bam_CNVs files have chr prefixes and 
 But all these above contain normal SVs because they only get filtered against a normal database after running 3-stratification.sh. The exception is for the .tl.2way.txt file which are translocations, the final file.
 
 
-3-stratification.sh	script:
+3-stratification.sh script:
 	1.	.inv.germline.bed = germline inversions
 	2.	.ins.germline.bed = germline insertions
 	3.	.cnv.gain.germline.bed = germline CNV gain
@@ -54,6 +54,6 @@ But all these above contain normal SVs because they only get filtered against a 
 	8.	.del.loss.somatic.bed.4 = WGS+OM deletions intersected w/ DGV polymorphic SVs to retain only somatic SVs
 
 Somatic files used for filtering and what they contain:
-	9.	DGV files = SVs in the Database of Genomic Variations from MacDonald et al 2014 that come up in at least 5 individuals, aka polymorphisms
-	10.	Cross-sample-same files = SV types that came up in the NA12878 normal cell line.
+	9.	DGV files = SVs in the Database of Genomic Variations from MacDonald et al 2014 that come up in at least 5 individuals: polymorphisms
+	10.	Cross-sample-same files = SV types that came up in the NA12878 normal cell line and recurrent SVs likely to be sequencing/optical mapping artifacts.
 	11.	Bionano.bed files = SVs in the UCSF optical mapping dataset of polymorphisms from Levy-Sakin et al. 2019
