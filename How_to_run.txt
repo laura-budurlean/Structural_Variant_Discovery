@@ -1,0 +1,59 @@
+	Instructions for running the SV calling pipeline:
+
+1) You can run any SV calling pipeline you wish for your project on your WGS files. You need to obtain a VCF file with your SV calls from WGS. For our data we opted to use LUMPY and DELLY. We use SpeedSeq pipeline for running the SVs which already incorporates LUMPY. We run DELLY separately. A separate repository for doing SV calling with SpeedSeq is here: https://github.com/laura-budurlean/SV-calling-with-SpeedSeq. For copy number alterations we use FreeCNV.
+
+
+2) From the Bionano data, obtain the VCF and .SMAP files for each sample from the pipeline you ran and give each sample its own folder with the respective VCF and .SMAP files. We used the Bionano Rare Variant Pipeline. You can either use filtered or unfiltered files. The scripts here have their own built-in-filtering parameters that you can adjust, similar to the Bionano ones available online, but you may also pre-filter Bionano files before downloading them if you wish.
+
+3) Now we can run the scripts. Note: If you set up your directories differently, make sure to change the file paths in the scripts. 
+
+4) Load any required modules including: Python, Bedtools, R
+
+5) Adjust headers, parametes, and paths as required for your own project and run: 1-Optical-Mapping-SV-part1.sh
+	5.1) Run the Bionano-remove-recurrent.sh script
+	5.2) Run 1-Optical-Mapping-SV-part2.sh
+
+6) Run filter-sv.sh in the /.../scripts/WGS/SV/ scripts folder
+
+7) Run merge-sv.sh in the /.../scripts/WGS/SV/ scripts folder
+
+NOTE before step 8 Make sure your FreeCNV .bam_CNVs files have chr prefixes and no trailing tabs. Also, Python pandas errors? Make sure Python version is higher than 3.7. I used 3.7.1
+8) Run 2-compare.sh.
+
+9) Run 3-stratification.sh
+
+
+	Outputs:
+
+1-Optical-Mapping-SV.sh scripts:	
+	1.	*.5533.bed = INVERSIONS
+	2.	*.intra.3-5.bed = INSERTIONS + intra-chr alterations in 3-5 direction
+	3.	*.intra.5-3.bed = DELETIONS + intra-chr alterations in 5-3 direction
+	4.	*.duplication.bed = DUPLICATIONS
+	5.	*inter.txt = inter-chr TRANSLOCATIONS
+	
+
+2-compare.sh script:
+	1.	*.wgs-del-cnv.bed = WGS union and CNV loss
+	2.	*.del.union.loss.bed = WGS + SAPHYR deletions
+	3.	*.inv.union.bed =  WGS + SAPHYR inversions
+	4.	*.gain.dup.union.bed = WGS + SAPHYR duplications and gains
+	5.	*.tl.2way.txt = WGS + SAPHYR translocations
+But all these above contain normal SVs because they only get filtered against a normal database after running 3-stratification.sh. The exception is for the .tl.2way.txt file which are translocations, the final file.
+
+
+3-stratification.sh	script:
+	1.	.inv.germline.bed = germline inversions
+	2.	.ins.germline.bed = germline insertions
+	3.	.cnv.gain.germline.bed = germline CNV gain
+	4.	.del.loss.germline.bed = germline CNV loss
+	
+	5.	.ins.somatic.bed.4 = WGS+OM insertions intersected w/ DGV polymorphic SVs to retain only somatic SVs
+	6.	.inv.somatic.bed.4 = WGS+OM inversions intersected w/ DGV polymorphic SVs to retain only somatic SVs
+	7.	.cnv.gain.somatic.bed.4 = WGS+OM copy gains intersected w/ DGV polymorphic SVs to retain only somatic SVs
+	8.	.del.loss.somatic.bed.4 = WGS+OM deletions intersected w/ DGV polymorphic SVs to retain only somatic SVs
+
+Somatic files used for filtering and what they contain:
+	9.	DGV files = SVs in the Database of Genomic Variations from MacDonald et al 2014 that come up in at least 5 individuals, aka polymorphisms
+	10.	Cross-sample-same files = SV types that came up in the NA12878 normal cell line.
+	11.	Bionano.bed files = SVs in the UCSF optical mapping dataset of polymorphisms from Levy-Sakin et al. 2019
