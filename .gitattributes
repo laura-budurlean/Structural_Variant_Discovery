@@ -1,0 +1,36 @@
+# Normalize text files to use LF (Unix) line endings
+* text=auto eol=lf
+
+# Specify languages for Shell/Bash scripts
+*.sh linguist-language=Shell
+*.bash linguist-language=Shell
+*.zsh linguist-language=Shell
+
+# Specify languages for Python scripts
+*.py linguist-language=Python
+
+# Specify languages for R scripts
+*.R linguist-language=R
+*.r linguist-language=R
+
+# Mark image files as binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+
+# Mark other binary files
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+
+# Treat custom file extensions as text
+*.txt text
+*.csv text
+*.tsv text
+
+# Handle specific file types
+*.sh text eol=lf
+*.py text eol=lf
+*.R text eol=lf
+*.r text eol=lf
